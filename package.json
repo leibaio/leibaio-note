@@ -1,5 +1,6 @@
 {
   "name": "leibaio-note",
+  "publisher": "leibaio-note",
   "displayName": "leibaio-note",
   "description": "",
   "version": "0.0.1",
@@ -12,10 +13,33 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
-      {
+    "viewsContainers": {
+      "activitybar": [{
+        "id": "leibaio-note",
+        "title": "Leibaio Note",
+        "icon": "assets/note-icon.svg"
+      }]
+    },
+    "views": {
+      "leibaio-note": [
+        {
+          "id": "noteTreeView",
+          "name": "Notes",
+          "icon": "assets/note-icon.svg"
+        }
+      ]
+    },
+    "commands": [{
         "command": "leibaio-note.helloWorld",
-        "title": "Hello World"
+        "title": "leibaio Hello World"
+      },
+      {
+        "command": "leibaio-note.openNote",
+        "title": "leibaio 笔记"
+      },
+      {
+        "command": "leibaio-note.showNote",
+        "title": "leibaio show note"
       }
     ]
   },
