@@ -2,6 +2,7 @@
   "name": "leibaio",
   "publisher": "leibaio",
   "displayName": "leibaio-note",
+  "icon": "assets/avatar.png",
   "description": "",
   "version": "0.0.1",
   "engines": {
