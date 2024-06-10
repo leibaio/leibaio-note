@@ -22,8 +22,8 @@ class NotesTreeDataProvider implements vscode.TreeDataProvider<Note> {
         return Promise.resolve([
           new Note(`笔记1`, vscode.TreeItemCollapsibleState.None, {
             command: 'leibaio-note.showNote', // 使用命令ID
-            title: "", // 用不到title参数，因为这是点击时的命令，不是按钮
-            arguments: ['笔记1的内容'] // 可传递给命令的参数，例如笔记内容或ID
+            title: "Open Document", // 用不到title参数，因为这是点击时的命令，不是按钮
+            arguments: ['https://www.yuque.com/leibaio/qxxtks/xy2g38d1srilfivb'] // 可传递给命令的参数，例如笔记内容或ID
           }),
           new Note(`笔记2`, vscode.TreeItemCollapsibleState.None),
         ]);
@@ -80,14 +80,48 @@ export function activate(context: vscode.ExtensionContext) {
   let disposableShowNote = vscode.commands.registerCommand('leibaio-note.showNote', (noteContent: string) => {
     // 创建Webview Panel
     const panel = vscode.window.createWebviewPanel(
-      'note', // Webview类型
-      'Note', // Webview标题
+      'externalPage', // Webview的类型，任意字符串即可
+      'External Page', // Webview的标题
       vscode.ViewColumn.One, // 在编辑器的哪一列中显示新的webview面板
-      {} // Webview选项
+      {
+        // 启用脚本执行
+        enableScripts: true
+      }
     );
 
-    // 设置Webview的HTML内容
-    panel.webview.html = getNoteWebviewContent(noteContent);
+    // 如果noteContent是一个URL，将其嵌入到iframe中
+    if (noteContent.startsWith('http')) {
+      // 通过iframe嵌入外部内容
+      panel.webview.html = `
+        <!DOCTYPE html>
+        <html lang="zh-CN">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <style>
+            body, html {
+              margin: 0; /* 移除默认的margin */
+              padding: 0; /* 移除默认的padding */
+              height: 100%; /* 设置高度为100% */
+              width: 100%; /* 设置宽度为100% */
+              overflow: hidden; /* 避免出现滚动条 */
+            }
+            iframe {
+              border: none; /* 移除iframe的边框 */
+              width: 100%; /* 设置iframe的宽度为100% */
+              height: 100%; /* 设置iframe的高度为100% */
+            }
+          </style>
+        </head>
+        <body>
+          <iframe src="${noteContent}" frameborder="0"></iframe>
+        </body>
+        </html>
+      `;
+    } else {
+      // 否则，显示笔记内容
+      panel.webview.html = getNoteWebviewContent(noteContent);
+    }
   });
 
   // 注册TreeView数据提供者
