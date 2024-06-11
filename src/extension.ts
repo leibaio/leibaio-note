@@ -85,7 +85,9 @@ export function activate(context: vscode.ExtensionContext) {
       vscode.ViewColumn.One, // 在编辑器的哪一列中显示新的webview面板
       {
         // 启用脚本执行
-        enableScripts: true
+        enableScripts: true,
+        // 这里是关键，启用webview中的一些默认行为，比如复制和粘贴
+        retainContextWhenHidden: true,
       }
     );
 
